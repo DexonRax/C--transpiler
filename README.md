@@ -1,6 +1,6 @@
-# GRM Transpiler: Rust-like `impl` blocks for C
+# C-- Transpiler: Rust-like `impl` blocks for C
 
-**GRM Transpiler** is a lightweight Python preprocessor that brings the elegance of Rust's `impl` blocks and method-style syntax to standard C. Stop writing messy global functions like `Human_set_height(Human* h, int height)` and start organizing your logic where it belongs.
+**C-- Transpiler** is a lightweight Python preprocessor that brings the elegance of Rust's `impl` blocks and method-style syntax to standard C. Stop writing messy global functions like `Human_set_height(Human* h, int height)` and start organizing your logic where it belongs.
 
 ## ✨ Features
 
@@ -15,9 +15,9 @@
 
 ## 🚀 How it Works
 
-The transpiler reads `.grm` files, parses your struct definitions and `impl` blocks, rewrites them into valid C, compiles the result using the settings in your `grm-make` file, then deletes the intermediate `.c` files. If compilation fails, the `.c` files are kept so you can inspect them.
+The transpiler reads `.cmm` files, parses your struct definitions and `impl` blocks, rewrites them into valid C, compiles the result using the settings in your `cmm-make` file, then deletes the intermediate `.c` files. If compilation fails, the `.c` files are kept so you can inspect them.
 
-### 1. The Input (`main.grm`)
+### 1. The Input (`main.cmm`)
 
 ```rust
 struct Human {
@@ -40,13 +40,13 @@ int main() {
 
 ## 🛠 Usage
 
-### Option A — Project build with `grm-make`
+### Option A — Project build with `cmm-make`
 
-Create a `grm-make` file next to your sources:
+Create a `cmm-make` file next to your sources:
 
 ```
 CC  = cc
-IN  = main.grm second.grm
+IN  = main.cmm second.cmm
 IP  = /usr/local/include ./vendor/include
 LP  = /usr/local/lib ./vendor/lib
 L   = raylib m
@@ -56,7 +56,7 @@ OUT = main.exe
 | Key | Flag | Description |
 |-----|------|-------------|
 | `CC`  | | Compiler to use (e.g. `gcc`, `clang`, `cc`) |
-| `IN`  | | Space-separated list of `.grm` source files |
+| `IN`  | | Space-separated list of `.cmm` source files |
 | `IP`  | `-I` | Space-separated include search paths |
 | `LP`  | `-L` | Space-separated library search paths |
 | `L`   | `-l` | Space-separated libraries to link (without the `-l` prefix) |
@@ -65,7 +65,7 @@ OUT = main.exe
 All keys are optional and whitespace around `=` is ignored. Then just run:
 
 ```bash
-python grmt.py
+python cmmt.py
 ```
 
 This transpiles every file listed in `IN`, then compiles them all in one shot:
@@ -76,14 +76,14 @@ cc main.c second.c -I/usr/local/include -I./vendor/include -L/usr/local/lib -L./
 
 ### Option B — Quick one-off compile
 
-Pass files directly on the command line to skip `IN` in `grm-make` (all other settings like `CC`, `IP`, `LP`, `L`, and `OUT` are still read from `grm-make` if present):
+Pass files directly on the command line to skip `IN` in `cmm-make` (all other settings like `CC`, `IP`, `LP`, `L`, and `OUT` are still read from `cmm-make` if present):
 
 ```bash
-python grmt.py main.grm
+python cmmt.py main.cmm
 ```
 
 ---
 
-### 💡 Why GRM?
+### 💡 Why C--?
 
-Because C is great, but manually passing pointers and prefixes like `MyVeryLongStructName_my_function_name` is exhausting. GRM Transpiler does the heavy lifting for you so you can focus on building.
+Because C is great, but manually passing pointers and prefixes like `MyVeryLongStructName_my_function_name` is exhausting. cmm Transpiler does the heavy lifting for you so you can focus on building.

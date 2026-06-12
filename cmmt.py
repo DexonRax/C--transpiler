@@ -132,7 +132,7 @@ def replace_array_element_calls(body, struct_name, struct_fields):
 
     return body
 
-def transpile_grm(input_file, output_file):
+def transpile_cmm(input_file, output_file):
     log_info(f"Reading {input_file}...")
     with open(input_file, 'r') as f:
         code = f.read()
@@ -256,10 +256,10 @@ def transpile_grm(input_file, output_file):
     
     log_success(f"Transpilation complete! Output: {output_file}")
 
-GRM_MAKE_FILE = "grm-make"
+cmm_MAKE_FILE = "cmm-make"
 
-def parse_grm_make():
-    """Parse grm-make and return (cc, inputs, inc_paths, lib_paths, libs, out). All fields optional."""
+def parse_cmm_make():
+    """Parse cmm-make and return (cc, inputs, inc_paths, lib_paths, libs, out). All fields optional."""
     cc        = "cc"
     inputs    = []
     inc_paths = []
@@ -267,11 +267,11 @@ def parse_grm_make():
     libs      = []
     out       = "a.out"
 
-    if not os.path.exists(GRM_MAKE_FILE):
+    if not os.path.exists(cmm_MAKE_FILE):
         return cc, inputs, inc_paths, lib_paths, libs, out
 
-    log_info(f"Reading '{GRM_MAKE_FILE}'...")
-    with open(GRM_MAKE_FILE, 'r') as f:
+    log_info(f"Reading '{cmm_MAKE_FILE}'...")
+    with open(cmm_MAKE_FILE, 'r') as f:
         for raw in f:
             line = raw.strip()
             if not line or line.startswith('#') or '=' not in line:
@@ -305,23 +305,23 @@ def parse_grm_make():
 if __name__ == "__main__":
     import subprocess
 
-    cc, grm_make_inputs, inc_paths, lib_paths, libs, out = parse_grm_make()
+    cc, cmm_make_inputs, inc_paths, lib_paths, libs, out = parse_cmm_make()
 
-    # CLI args override IN from grm-make; if neither provided, bail out
+    # CLI args override IN from cmm-make; if neither provided, bail out
     if sys.argv[1:]:
-        grm_files = sys.argv[1:]
-    elif grm_make_inputs:
-        grm_files = grm_make_inputs
+        cmm_files = sys.argv[1:]
+    elif cmm_make_inputs:
+        cmm_files = cmm_make_inputs
     else:
-        print(f"Usage: python grmt.py <file1.grm> [file2.grm ...]")
-        print(f"       (or set IN in '{GRM_MAKE_FILE}')")
+        print(f"Usage: python cmmt.py <file1.cmm> [file2.cmm ...]")
+        print(f"       (or set IN in '{CMM_MAKE_FILE}')")
         sys.exit(1)
 
-    # Transpile every .grm -> .c
+    # Transpile every .cmm -> .c
     c_files = []
-    for grm_file in grm_files:
-        c_file = os.path.splitext(grm_file)[0] + ".c"
-        transpile_grm(grm_file, c_file)
+    for cmm_file in cmm_files:
+        c_file = os.path.splitext(cmm_file)[0] + ".c"
+        transpile_cmm(cmm_file, c_file)
         c_files.append(c_file)
 
     # Compile
